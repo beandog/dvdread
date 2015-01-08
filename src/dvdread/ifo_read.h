@@ -210,7 +210,6 @@ int ifoRead_TXTDT_MGI(ifo_handle_t *);
  * file which was not read in or which does not exist.
  */
 void ifoFree_PTL_MAIT(ifo_handle_t *);
-void ifoFree_VTS_ATRT(ifo_handle_t *);
 void ifoFree_TT_SRPT(ifo_handle_t *);
 void ifoFree_VTS_PTT_SRPT(ifo_handle_t *);
 void ifoFree_FP_PGC(ifo_handle_t *);
@@ -228,6 +227,7 @@ void ifoFree_TITLE_C_ADT(ifo_handle_t *);
 void ifoFree_TITLE_VOBU_ADMAP(ifo_handle_t *);
 void ifoFree_TXTDT_MGI(ifo_handle_t *);
 void ifoFree_VOBU_ADMAP(ifo_handle_t *);
+void ifoFree_VTS_ATRT(ifo_handle_t *);
 
 #ifdef __cplusplus
 };

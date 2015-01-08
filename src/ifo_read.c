@@ -510,7 +510,12 @@ void ifoClose(ifo_handle_t *ifofile) {
   if(ifofile->txtdt_mgi)
     free(ifofile->txtdt_mgi);
 
-  ifoFree_VTS_ATRT(ifofile);
+  if(ifofile->vts_atrt) {
+    free(ifofile->vts_atrt->vts);
+    free(ifofile->vts_atrt->vts_atrt_offsets);
+    free(ifofile->vts_atrt);
+  }
+
   ifoFree_PTL_MAIT(ifofile);
   ifoFree_PGCI_UT(ifofile);
   ifoFree_TT_SRPT(ifofile);
@@ -2272,15 +2277,7 @@ int ifoRead_VTS_ATRT(ifo_handle_t *ifofile) {
 
 
 void ifoFree_VTS_ATRT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->vts_atrt) {
-    free(ifofile->vts_atrt->vts);
-    free(ifofile->vts_atrt->vts_atrt_offsets);
-    free(ifofile->vts_atrt);
-    ifofile->vts_atrt = NULL;
-  }
+  return;
 }
 
 
