@@ -1721,8 +1721,7 @@ static int ifoRead_C_ADT_internal(ifo_handle_t *ifofile,
 
 
 void ifoFree_C_ADT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
+  return;
 }
 
 void ifoFree_TITLE_C_ADT(ifo_handle_t *ifofile) {
