@@ -599,9 +599,8 @@ void ifoClose(ifo_handle_t *ifofile) {
   free(ifofile->vtsi_mat);
 
   DVDCloseFile(ifofile->file);
-  ifofile->file = 0;
   free(ifofile);
-  ifofile = 0;
+  ifofile = NULL;
 }
 
 
