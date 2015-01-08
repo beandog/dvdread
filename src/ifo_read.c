@@ -492,7 +492,11 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->menu_vobu_admap);
   }
 
-  ifoFree_TITLE_VOBU_ADMAP(ifofile);
+  if(ifofile->vts_vobu_admap) {
+    free(ifofile->vts_vobu_admap->vobu_start_sectors);
+    free(ifofile->vts_vobu_admap);
+  }
+
   ifoFree_C_ADT(ifofile);
   ifoFree_TITLE_C_ADT(ifofile);
   ifoFree_TXTDT_MGI(ifofile);
@@ -1824,24 +1828,13 @@ static int ifoRead_VOBU_ADMAP_internal(ifo_handle_t *ifofile,
   return 1;
 }
 
-
-static void ifoFree_VOBU_ADMAP_internal(vobu_admap_t *vobu_admap) {
-  if(vobu_admap) {
-    free(vobu_admap->vobu_start_sectors);
-    free(vobu_admap);
-  }
-}
-
 void ifoFree_VOBU_ADMAP(ifo_handle_t *ifofile) {
   return;
 }
 
 void ifoFree_TITLE_VOBU_ADMAP(ifo_handle_t *ifofile) {
-  if(!ifofile)
     return;
 
-  ifoFree_VOBU_ADMAP_internal(ifofile->vts_vobu_admap);
-  ifofile->vts_vobu_admap = NULL;
 }
 
 int ifoRead_PGCIT(ifo_handle_t *ifofile) {
