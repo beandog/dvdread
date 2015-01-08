@@ -595,11 +595,8 @@ void ifoClose(ifo_handle_t *ifofile) {
 
   ifoFree_VTS_TMAPT(ifofile);
 
-  if(ifofile->vmgi_mat)
-    free(ifofile->vmgi_mat);
-
-  if(ifofile->vtsi_mat)
-    free(ifofile->vtsi_mat);
+  free(ifofile->vmgi_mat);
+  free(ifofile->vtsi_mat);
 
   DVDCloseFile(ifofile->file);
   ifofile->file = 0;
