@@ -528,8 +528,6 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->ptl_mait);
   }
 
-  ifoFree_PGCI_UT(ifofile);
-
   if(ifofile->pgci_ut) {
     for(i = 0; i < ifofile->pgci_ut->nr_of_lus; i++) {
       for(j = 0; j < ifofile->pgci_ut->lu[i].pgcit->nr_of_pgci_srp; j++) {
