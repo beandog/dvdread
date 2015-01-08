@@ -487,6 +487,8 @@ void ifoClose(ifo_handle_t *ifofile) {
   if(!ifofile)
     return;
 
+  unsigned int i;
+
   if(ifofile->menu_vobu_admap) {
     free(ifofile->menu_vobu_admap->vobu_start_sectors);
     free(ifofile->menu_vobu_admap);
@@ -516,7 +518,16 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->vts_atrt);
   }
 
-  ifoFree_PTL_MAIT(ifofile);
+  if(ifofile->ptl_mait) {
+    if(ifofile->ptl_mait->countries) {
+      for(i = 0; i < ifofile->ptl_mait->nr_of_countries; i++) {
+        free(ifofile->ptl_mait->countries[i].pf_ptl_mai);
+      }
+      free(ifofile->ptl_mait->countries);
+    }
+    free(ifofile->ptl_mait);
+  }
+
   ifoFree_PGCI_UT(ifofile);
   ifoFree_TT_SRPT(ifofile);
   ifoFree_FP_PGC(ifofile);
@@ -1460,19 +1471,7 @@ int ifoRead_PTL_MAIT(ifo_handle_t *ifofile) {
 }
 
 void ifoFree_PTL_MAIT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->ptl_mait) {
-    unsigned int i;
-
-    for(i = 0; i < ifofile->ptl_mait->nr_of_countries; i++) {
-      free(ifofile->ptl_mait->countries[i].pf_ptl_mai);
-    }
-    free(ifofile->ptl_mait->countries);
-    free(ifofile->ptl_mait);
-    ifofile->ptl_mait = NULL;
-  }
+  return;
 }
 
 int ifoRead_VTS_TMAPT(ifo_handle_t *ifofile) {
