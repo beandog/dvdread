@@ -487,7 +487,11 @@ void ifoClose(ifo_handle_t *ifofile) {
   if(!ifofile)
     return;
 
-  ifoFree_VOBU_ADMAP(ifofile);
+  if(ifofile->menu_vobu_admap) {
+    free(ifofile->menu_vobu_admap->vobu_start_sectors);
+    free(ifofile->menu_vobu_admap);
+  }
+
   ifoFree_TITLE_VOBU_ADMAP(ifofile);
   ifoFree_C_ADT(ifofile);
   ifoFree_TITLE_C_ADT(ifofile);
@@ -1829,11 +1833,7 @@ static void ifoFree_VOBU_ADMAP_internal(vobu_admap_t *vobu_admap) {
 }
 
 void ifoFree_VOBU_ADMAP(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  ifoFree_VOBU_ADMAP_internal(ifofile->menu_vobu_admap);
-  ifofile->menu_vobu_admap = NULL;
+  return;
 }
 
 void ifoFree_TITLE_VOBU_ADMAP(ifo_handle_t *ifofile) {
