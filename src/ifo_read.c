@@ -566,7 +566,24 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->first_play_pgc->cell_position);
   }
 
-  ifoFree_PGCIT(ifofile);
+  if(ifofile->vts_pgcit) {
+      for(i = 0; i < ifofile->vts_pgcit->nr_of_pgci_srp; i++) {
+
+        if(ifofile->vts_pgcit->pgci_srp[i].pgc->command_tbl) {
+          free(ifofile->vts_pgcit->pgci_srp[i].pgc->command_tbl->pre_cmds);
+          free(ifofile->vts_pgcit->pgci_srp[i].pgc->command_tbl->post_cmds);
+          free(ifofile->vts_pgcit->pgci_srp[i].pgc->command_tbl->cell_cmds);
+          free(ifofile->vts_pgcit->pgci_srp[i].pgc->command_tbl);
+        }
+        free(ifofile->vts_pgcit->pgci_srp[i].pgc->program_map);
+        free(ifofile->vts_pgcit->pgci_srp[i].pgc->cell_playback);
+        free(ifofile->vts_pgcit->pgci_srp[i].pgc->cell_position);
+        free(ifofile->vts_pgcit->pgci_srp[i].pgc);
+      }
+      free(ifofile->vts_pgcit->pgci_srp);
+      free(ifofile->vts_pgcit);
+  }
+
   ifoFree_VTS_PTT_SRPT(ifofile);
   ifoFree_VTS_TMAPT(ifofile);
 
@@ -1993,12 +2010,7 @@ static void ifoFree_PGCIT_internal(pgcit_t **pgcit) {
 }
 
 void ifoFree_PGCIT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->vts_pgcit) {
-    ifoFree_PGCIT_internal(&ifofile->vts_pgcit);
-  }
+  return;
 }
 
 static int find_dup_lut(pgci_lu_t *lu, uint32_t start_byte, int count) {
