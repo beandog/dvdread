@@ -584,7 +584,15 @@ void ifoClose(ifo_handle_t *ifofile) {
       free(ifofile->vts_pgcit);
   }
 
-  ifoFree_VTS_PTT_SRPT(ifofile);
+  if(ifofile->vts_ptt_srpt) {
+    for(i = 0; i < ifofile->vts_ptt_srpt->nr_of_srpts; i++) {
+      free(ifofile->vts_ptt_srpt->title[i].ptt);
+    }
+    free(ifofile->vts_ptt_srpt->title);
+    free(ifofile->vts_ptt_srpt->ttu_offset);
+    free(ifofile->vts_ptt_srpt);
+  }
+
   ifoFree_VTS_TMAPT(ifofile);
 
   if(ifofile->vmgi_mat)
@@ -1372,18 +1380,7 @@ fail:
 
 
 void ifoFree_VTS_PTT_SRPT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->vts_ptt_srpt) {
-    int i;
-    for(i = 0; i < ifofile->vts_ptt_srpt->nr_of_srpts; i++)
-      free(ifofile->vts_ptt_srpt->title[i].ptt);
-    free(ifofile->vts_ptt_srpt->ttu_offset);
-    free(ifofile->vts_ptt_srpt->title);
-    free(ifofile->vts_ptt_srpt);
-    ifofile->vts_ptt_srpt = 0;
-  }
+  return;
 }
 
 
