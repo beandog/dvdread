@@ -549,7 +549,11 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->pgci_ut);
   }
 
-  ifoFree_TT_SRPT(ifofile);
+  if(ifofile->tt_srpt) {
+    free(ifofile->tt_srpt->title);
+    free(ifofile->tt_srpt);
+  }
+
   ifoFree_FP_PGC(ifofile);
   ifoFree_PGCIT(ifofile);
   ifoFree_VTS_PTT_SRPT(ifofile);
@@ -1133,7 +1137,9 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
   }
   if(!(DVDReadBytes(ifofile->file, tt_srpt->title, info_length))) {
     fprintf(stderr, "libdvdread: Unable to read read TT_SRPT.\n");
-    ifoFree_TT_SRPT(ifofile);
+    free(ifofile->tt_srpt->title);
+    free(ifofile->tt_srpt);
+    ifofile->tt_srpt = NULL;
     return 0;
   }
 
@@ -1188,15 +1194,7 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
 
 
 void ifoFree_TT_SRPT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->tt_srpt) {
-    free(ifofile->tt_srpt->title);
-    free(ifofile->tt_srpt);
-    ifofile->tt_srpt->title = NULL;
-    ifofile->tt_srpt = NULL;
-  }
+  return;
 }
 
 
