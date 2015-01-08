@@ -487,7 +487,7 @@ void ifoClose(ifo_handle_t *ifofile) {
   if(!ifofile)
     return;
 
-  unsigned int i;
+  unsigned int i, j;
 
   if(ifofile->menu_vobu_admap) {
     free(ifofile->menu_vobu_admap->vobu_start_sectors);
@@ -529,6 +529,28 @@ void ifoClose(ifo_handle_t *ifofile) {
   }
 
   ifoFree_PGCI_UT(ifofile);
+
+  if(ifofile->pgci_ut) {
+    for(i = 0; i < ifofile->pgci_ut->nr_of_lus; i++) {
+      for(j = 0; j < ifofile->pgci_ut->lu[i].pgcit->nr_of_pgci_srp; j++) {
+        if(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->command_tbl) {
+          free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->command_tbl->pre_cmds);
+          free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->command_tbl->post_cmds);
+          free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->command_tbl->cell_cmds);
+          free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->command_tbl);
+        }
+        free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->program_map);
+        free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->cell_playback);
+        free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc->cell_position);
+        free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp[j].pgc);
+      }
+      free(ifofile->pgci_ut->lu[i].pgcit->pgci_srp);
+      free(ifofile->pgci_ut->lu[i].pgcit);
+    }
+    free(ifofile->pgci_ut->lu);
+    free(ifofile->pgci_ut);
+  }
+
   ifoFree_TT_SRPT(ifofile);
   ifoFree_FP_PGC(ifofile);
   ifoFree_PGCIT(ifofile);
@@ -2119,19 +2141,7 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
 
 
 void ifoFree_PGCI_UT(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->pgci_ut) {
-    unsigned int i;
-
-    for(i = 0; i < ifofile->pgci_ut->nr_of_lus; i++) {
-      ifoFree_PGCIT_internal(&ifofile->pgci_ut->lu[i].pgcit);
-    }
-    free(ifofile->pgci_ut->lu);
-    free(ifofile->pgci_ut);
-    ifofile->pgci_ut = NULL;
-  }
+  return;
 }
 
 static int ifoRead_VTS_ATTRIBUTES(ifo_handle_t *ifofile,
