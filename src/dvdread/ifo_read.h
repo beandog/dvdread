@@ -217,7 +217,6 @@ void ifoFree_FP_PGC(ifo_handle_t *);
 void ifoFree_PGCIT(ifo_handle_t *);
 void ifoFree_PGCI_UT(ifo_handle_t *);
 void ifoFree_VTS_TMAPT(ifo_handle_t *);
-void ifoFree_TXTDT_MGI(ifo_handle_t *);
 
 /**
  * Deprecated functions used internally for freeing parsed sections of
@@ -227,6 +226,7 @@ void ifoFree_TXTDT_MGI(ifo_handle_t *);
 void ifoFree_C_ADT(ifo_handle_t *);
 void ifoFree_TITLE_C_ADT(ifo_handle_t *);
 void ifoFree_TITLE_VOBU_ADMAP(ifo_handle_t *);
+void ifoFree_TXTDT_MGI(ifo_handle_t *);
 void ifoFree_VOBU_ADMAP(ifo_handle_t *);
 
 #ifdef __cplusplus

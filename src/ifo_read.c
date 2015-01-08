@@ -507,7 +507,9 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->vts_c_adt);
   }
 
-  ifoFree_TXTDT_MGI(ifofile);
+  if(ifofile->txtdt_mgi)
+    free(ifofile->txtdt_mgi);
+
   ifoFree_VTS_ATRT(ifofile);
   ifoFree_PTL_MAIT(ifofile);
   ifoFree_PGCI_UT(ifofile);
@@ -2317,11 +2319,5 @@ int ifoRead_TXTDT_MGI(ifo_handle_t *ifofile) {
 }
 
 void ifoFree_TXTDT_MGI(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->txtdt_mgi) {
-    free(ifofile->txtdt_mgi);
-    ifofile->txtdt_mgi = NULL;
-  }
+  return;
 }
