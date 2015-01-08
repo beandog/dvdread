@@ -554,7 +554,18 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->tt_srpt);
   }
 
-  ifoFree_FP_PGC(ifofile);
+  if(ifofile->first_play_pgc) {
+    if(ifofile->first_play_pgc->command_tbl) {
+      free(ifofile->first_play_pgc->command_tbl->pre_cmds);
+      free(ifofile->first_play_pgc->command_tbl->post_cmds);
+      free(ifofile->first_play_pgc->command_tbl->cell_cmds);
+      free(ifofile->first_play_pgc->command_tbl);
+    }
+    free(ifofile->first_play_pgc->program_map);
+    free(ifofile->first_play_pgc->cell_playback);
+    free(ifofile->first_play_pgc->cell_position);
+  }
+
   ifoFree_PGCIT(ifofile);
   ifoFree_VTS_PTT_SRPT(ifofile);
   ifoFree_VTS_TMAPT(ifofile);
@@ -1085,12 +1096,7 @@ static void ifoFree_PGC(pgc_t **pgc) {
 }
 
 void ifoFree_FP_PGC(ifo_handle_t *ifofile) {
-  if(!ifofile)
-    return;
-
-  if(ifofile->first_play_pgc) {
-    ifoFree_PGC(&ifofile->first_play_pgc);
-  }
+  return;
 }
 
 
