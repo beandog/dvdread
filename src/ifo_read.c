@@ -497,7 +497,11 @@ void ifoClose(ifo_handle_t *ifofile) {
     free(ifofile->vts_vobu_admap);
   }
 
-  ifoFree_C_ADT(ifofile);
+  if(ifofile->menu_c_adt) {
+    free(ifofile->menu_c_adt->cell_adr_table);
+    free(ifofile->menu_c_adt);
+  }
+
   ifoFree_TITLE_C_ADT(ifofile);
   ifoFree_TXTDT_MGI(ifofile);
   ifoFree_VTS_ATRT(ifofile);
@@ -1722,9 +1726,6 @@ static void ifoFree_C_ADT_internal(c_adt_t *c_adt) {
 void ifoFree_C_ADT(ifo_handle_t *ifofile) {
   if(!ifofile)
     return;
-
-  ifoFree_C_ADT_internal(ifofile->menu_c_adt);
-  ifofile->menu_c_adt = NULL;
 }
 
 void ifoFree_TITLE_C_ADT(ifo_handle_t *ifofile) {
