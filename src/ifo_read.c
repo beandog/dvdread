@@ -748,6 +748,7 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
 
     if(!(DVDReadBytes(ifofile->file, cmd_tbl->pre_cmds, pre_cmds_size))) {
       free(cmd_tbl->pre_cmds);
+      cmd_tbl->pre_cmds = NULL;
       return 0;
     }
   }
@@ -756,14 +757,15 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
     unsigned int post_cmds_size = cmd_tbl->nr_of_post * COMMAND_DATA_SIZE;
     cmd_tbl->post_cmds = malloc(post_cmds_size);
     if(!cmd_tbl->post_cmds) {
-      if(cmd_tbl->pre_cmds)
-        free(cmd_tbl->pre_cmds);
+      free(cmd_tbl->pre_cmds);
+      cmd_tbl->pre_cmds = NULL;
       return 0;
     }
     if(!(DVDReadBytes(ifofile->file, cmd_tbl->post_cmds, post_cmds_size))) {
-      if(cmd_tbl->pre_cmds)
-        free(cmd_tbl->pre_cmds);
+      free(cmd_tbl->pre_cmds);
+      cmd_tbl->pre_cmds = NULL;
       free(cmd_tbl->post_cmds);
+      cmd_tbl->post_cmds = NULL;
       return 0;
     }
   }
@@ -772,18 +774,19 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
     unsigned int cell_cmds_size = cmd_tbl->nr_of_cell * COMMAND_DATA_SIZE;
     cmd_tbl->cell_cmds = malloc(cell_cmds_size);
     if(!cmd_tbl->cell_cmds) {
-      if(cmd_tbl->pre_cmds)
-        free(cmd_tbl->pre_cmds);
-      if(cmd_tbl->post_cmds)
-        free(cmd_tbl->post_cmds);
+      free(cmd_tbl->pre_cmds);
+      cmd_tbl->pre_cmds = NULL;
+      free(cmd_tbl->post_cmds);
+      cmd_tbl->post_cmds = NULL;
       return 0;
     }
     if(!(DVDReadBytes(ifofile->file, cmd_tbl->cell_cmds, cell_cmds_size))) {
-      if(cmd_tbl->pre_cmds)
-        free(cmd_tbl->pre_cmds);
-      if(cmd_tbl->post_cmds)
-        free(cmd_tbl->post_cmds);
+      free(cmd_tbl->pre_cmds);
+      cmd_tbl->pre_cmds = NULL;
+      free(cmd_tbl->post_cmds);
+      cmd_tbl->post_cmds = NULL;
       free(cmd_tbl->cell_cmds);
+      cmd_tbl->cell_cmds = NULL;
       return 0;
     }
   }
@@ -922,6 +925,8 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
 
     if(!ifoRead_PGC_COMMAND_TBL(ifofile, pgc->command_tbl,
                                 offset + pgc->command_tbl_offset)) {
+      free(pgc->command_tbl);
+      pgc->command_tbl = NULL;
       return 0;
     }
   } else {
@@ -935,6 +940,8 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
     }
     if(!ifoRead_PGC_PROGRAM_MAP(ifofile, pgc->program_map,pgc->nr_of_programs,
                                 offset + pgc->program_map_offset)) {
+      free(pgc->program_map);
+      pgc->program_map = NULL;
       return 0;
     }
   } else {
@@ -949,6 +956,8 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
     if(!ifoRead_CELL_PLAYBACK_TBL(ifofile, pgc->cell_playback,
                                   pgc->nr_of_cells,
                                   offset + pgc->cell_playback_offset)) {
+      free(pgc->cell_playback);
+      pgc->cell_playback = NULL;
       return 0;
     }
   } else {
@@ -963,6 +972,8 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
     if(!ifoRead_CELL_POSITION_TBL(ifofile, pgc->cell_position,
                                   pgc->nr_of_cells,
                                   offset + pgc->cell_position_offset)) {
+      free(pgc->cell_position);
+      pgc->cell_position = NULL;
       return 0;
     }
   } else {
@@ -1051,6 +1062,7 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
   if(!(DVDReadBytes(ifofile->file, tt_srpt, TT_SRPT_SIZE))) {
     fprintf(stderr, "libdvdread: Unable to read read TT_SRPT.\n");
     free(tt_srpt);
+    ifofile->tt_srpt = NULL;
     return 0;
   }
 
@@ -1671,6 +1683,7 @@ static int ifoRead_C_ADT_internal(ifo_handle_t *ifofile,
   if(info_length &&
      !(DVDReadBytes(ifofile->file, c_adt->cell_adr_table, info_length))) {
     free(c_adt->cell_adr_table);
+    c_adt->cell_adr_table = NULL;
     return 0;
   }
 
@@ -1797,6 +1810,7 @@ static int ifoRead_VOBU_ADMAP_internal(ifo_handle_t *ifofile,
      !(DVDReadBytes(ifofile->file,
                     vobu_admap->vobu_start_sectors, info_length))) {
     free(vobu_admap->vobu_start_sectors);
+    vobu_admap->vobu_start_sectors = NULL;
     return 0;
   }
 
