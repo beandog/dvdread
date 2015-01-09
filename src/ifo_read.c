@@ -2076,11 +2076,11 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
     }
     pgci_ut->lu[i].pgcit = calloc(1, sizeof(pgcit_t));
     if(!pgci_ut->lu[i].pgcit) {
-      unsigned int j;
+      unsigned int j, k;
       for(j = 0; j < i; j++) {
         if(pgci_ut->lu[j].pgcit->pgci_srp) {
-          for(i = 0; i < pgci_ut->lu[j].pgcit->nr_of_pgci_srp; i++) {
-	    ifoFree_PGC(pgci_ut->lu[j].pgcit->pgci_srp[i].pgc);
+          for(k = 0; i < pgci_ut->lu[j].pgcit->nr_of_pgci_srp; k++) {
+	    ifoFree_PGC(pgci_ut->lu[j].pgcit->pgci_srp[k].pgc);
           }
 	  free(pgci_ut->lu[j].pgcit->pgci_srp);
         }
