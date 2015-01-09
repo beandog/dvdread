@@ -830,7 +830,7 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
 
   if(cmd_tbl->nr_of_pre > 0) {
     unsigned int pre_cmds_size  = cmd_tbl->nr_of_pre * COMMAND_DATA_SIZE;
-    cmd_tbl->pre_cmds = malloc(pre_cmds_size);
+    cmd_tbl->pre_cmds = calloc(1, pre_cmds_size);
     if(!cmd_tbl->pre_cmds)
       return 0;
 
@@ -843,7 +843,7 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
 
   if(cmd_tbl->nr_of_post > 0) {
     unsigned int post_cmds_size = cmd_tbl->nr_of_post * COMMAND_DATA_SIZE;
-    cmd_tbl->post_cmds = malloc(post_cmds_size);
+    cmd_tbl->post_cmds = calloc(1, post_cmds_size);
     if(!cmd_tbl->post_cmds) {
       free(cmd_tbl->pre_cmds);
       cmd_tbl->pre_cmds = NULL;
@@ -860,7 +860,7 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
 
   if(cmd_tbl->nr_of_cell > 0) {
     unsigned int cell_cmds_size = cmd_tbl->nr_of_cell * COMMAND_DATA_SIZE;
-    cmd_tbl->cell_cmds = malloc(cell_cmds_size);
+    cmd_tbl->cell_cmds = calloc(1, cell_cmds_size);
     if(!cmd_tbl->cell_cmds) {
       free(cmd_tbl->pre_cmds);
       cmd_tbl->pre_cmds = NULL;
