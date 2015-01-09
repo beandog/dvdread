@@ -87,9 +87,7 @@ static int ifoRead_VOBU_ADMAP_internal(ifo_handle_t *ifofile,
 static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
                                   unsigned int offset);
 
-static void ifoFree_PGC(pgc_t **pgc);
-static void ifoFree_PGC_COMMAND_TBL(pgc_command_tbl_t *cmd_tbl);
-static void ifoFree_PGCIT_internal(pgcit_t **pgcit);
+static void ifoFree_PGC(pgc_t *pgc);
 
 static inline int DVDFileSeekForce_( dvd_file_t *dvd_file, uint32_t offset, int force_size ) {
   return (DVDFileSeekForce(dvd_file, (int)offset, force_size) == (int)offset);
@@ -887,17 +885,20 @@ static int ifoRead_PGC_COMMAND_TBL(ifo_handle_t *ifofile,
   return 1;
 }
 
+static void ifoFree_PGC(pgc_t *pgc) {
+  if(!pgc)
+    return;
 
-static void ifoFree_PGC_COMMAND_TBL(pgc_command_tbl_t *cmd_tbl) {
-  if(cmd_tbl) {
-    if(cmd_tbl->nr_of_pre && cmd_tbl->pre_cmds)
-      free(cmd_tbl->pre_cmds);
-    if(cmd_tbl->nr_of_post && cmd_tbl->post_cmds)
-      free(cmd_tbl->post_cmds);
-    if(cmd_tbl->nr_of_cell && cmd_tbl->cell_cmds)
-      free(cmd_tbl->cell_cmds);
-    free(cmd_tbl);
+  if(pgc->command_tbl) {
+    free(pgc->command_tbl->pre_cmds);
+    free(pgc->command_tbl->post_cmds);
+    free(pgc->command_tbl->cell_cmds);
+    free(pgc->command_tbl);
   }
+  free(pgc->program_map);
+  free(pgc->cell_playback);
+  free(pgc->cell_position);
+  free(pgc);
 }
 
 static int ifoRead_PGC_PROGRAM_MAP(ifo_handle_t *ifofile,
@@ -1093,27 +1094,12 @@ int ifoRead_FP_PGC(ifo_handle_t *ifofile) {
   ifofile->first_play_pgc->ref_count = 1;
   if(!ifoRead_PGC(ifofile, ifofile->first_play_pgc,
                   ifofile->vmgi_mat->first_play_pgc)) {
-    ifoFree_PGC(&ifofile->first_play_pgc);
+    ifoFree_PGC(ifofile->first_play_pgc);
+    ifofile->first_play_pgc = NULL;
     return 0;
   }
 
   return 1;
-}
-
-static void ifoFree_PGC(pgc_t **pgc) {
-  if(pgc && *pgc && (--(*pgc)->ref_count) <= 0) {
-    ifoFree_PGC_COMMAND_TBL((*pgc)->command_tbl);
-    if((*pgc)->program_map)
-      free((*pgc)->program_map);
-    if((*pgc)->cell_playback)
-      free((*pgc)->cell_playback);
-    if((*pgc)->cell_position)
-      free((*pgc)->cell_position);
-    free(*pgc);
-  }
-  if (pgc) {
-    *pgc = NULL;
-  }
 }
 
 void ifoFree_FP_PGC(ifo_handle_t *ifofile) {
@@ -1965,7 +1951,7 @@ static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
     if(!pgcit->pgci_srp[i].pgc) {
       int j;
       for(j = 0; j < i; j++) {
-        ifoFree_PGC(&pgcit->pgci_srp[j].pgc);
+        ifoFree_PGC(pgcit->pgci_srp[j].pgc);
       }
       goto fail;
     }
@@ -1974,9 +1960,8 @@ static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
                     offset + pgcit->pgci_srp[i].pgc_start_byte)) {
       int j;
       for(j = 0; j <= i; j++) {
-        ifoFree_PGC(&pgcit->pgci_srp[j].pgc);
+        ifoFree_PGC(pgcit->pgci_srp[j].pgc);
       }
-      free(pgcit->pgci_srp[i].pgc);
       goto fail;
     }
   }
@@ -1986,20 +1971,6 @@ fail:
   free(pgcit->pgci_srp);
   pgcit->pgci_srp = NULL;
   return 0;
-}
-
-static void ifoFree_PGCIT_internal(pgcit_t **pgcit) {
-  if(pgcit && *pgcit && (--(*pgcit)->ref_count <= 0)) {
-    int i;
-    for(i = 0; i < (*pgcit)->nr_of_pgci_srp; i++)
-    {
-      ifoFree_PGC(&(*pgcit)->pgci_srp[i].pgc);
-    }
-    free((*pgcit)->pgci_srp);
-    free(*pgcit);
-  }
-  if (pgcit)
-    *pgcit = NULL;
 }
 
 void ifoFree_PGCIT(ifo_handle_t *ifofile) {
@@ -2119,7 +2090,13 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
     if(!pgci_ut->lu[i].pgcit) {
       unsigned int j;
       for(j = 0; j < i; j++) {
-        ifoFree_PGCIT_internal(&pgci_ut->lu[j].pgcit);
+        if(pgci_ut->lu[j].pgcit->pgci_srp) {
+          for(i = 0; i < pgci_ut->lu[j].pgcit->nr_of_pgci_srp; i++) {
+	    ifoFree_PGC(pgci_ut->lu[j].pgcit->pgci_srp[i].pgc);
+          }
+	  free(pgci_ut->lu[j].pgcit->pgci_srp);
+        }
+	free(pgci_ut->lu[j].pgcit);
       }
       free(pgci_ut->lu);
       free(pgci_ut);
@@ -2132,7 +2109,14 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
                                + pgci_ut->lu[i].lang_start_byte)) {
       unsigned int j;
       for(j = 0; j <= i; j++) {
-        ifoFree_PGCIT_internal(&pgci_ut->lu[j].pgcit);
+	if(pgci_ut->lu[j].pgcit->pgci_srp) {
+	  unsigned int k;
+	  for(k = 0; k < pgci_ut->lu[j].pgcit->nr_of_pgci_srp; k++) {
+	    ifoFree_PGC(pgci_ut->lu[j].pgcit->pgci_srp[k].pgc);
+	  }
+	  free(pgci_ut->lu[j].pgcit->pgci_srp);
+	  free(pgci_ut->lu[j].pgcit);
+	}
       }
       free(pgci_ut->lu);
       free(pgci_ut);
