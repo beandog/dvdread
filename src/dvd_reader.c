@@ -1322,7 +1322,7 @@ ssize_t DVDReadBytes( dvd_file_t *dvd_file, void *data, size_t byte_size )
   numsec = ( ( seek_byte + byte_size ) / DVD_VIDEO_LB_LEN ) +
     ( ( ( seek_byte + byte_size ) % DVD_VIDEO_LB_LEN ) ? 1 : 0 );
 
-  secbuf_base = malloc( numsec * DVD_VIDEO_LB_LEN + 2048 );
+  secbuf_base = calloc( numsec, DVD_VIDEO_LB_LEN + 2048 );
   if( !secbuf_base ) {
     fprintf( stderr, "libdvdread: Can't allocate memory "
              "for file read!\n" );
