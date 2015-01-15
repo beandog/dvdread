@@ -644,18 +644,6 @@ static int ifoRead_VMG(ifo_handle_t *ifofile) {
   read_subp_attr(&vmgi_mat->vmgm_subp_attr);
 
 
-  CHECK_ZERO(vmgi_mat->zero_1);
-  CHECK_ZERO(vmgi_mat->zero_2);
-  /* DVDs created by VDR-to-DVD device LG RC590M violate the following check with
-   * vmgi_mat->zero_3 = 0x00000000010000000000000000000000000000. */
-  CHECK_ZERO(vmgi_mat->zero_3);
-  CHECK_ZERO(vmgi_mat->zero_4);
-  CHECK_ZERO(vmgi_mat->zero_5);
-  CHECK_ZERO(vmgi_mat->zero_6);
-  CHECK_ZERO(vmgi_mat->zero_7);
-  CHECK_ZERO(vmgi_mat->zero_8);
-  CHECK_ZERO(vmgi_mat->zero_9);
-  CHECK_ZERO(vmgi_mat->zero_10);
   CHECK_VALUE(vmgi_mat->vmg_last_sector != 0);
   CHECK_VALUE(vmgi_mat->vmgi_last_sector != 0);
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
@@ -740,27 +728,6 @@ static int ifoRead_VTS(ifo_handle_t *ifofile) {
   B2N_32(vtsi_mat->vts_vobu_admap);
 
 
-  CHECK_ZERO(vtsi_mat->zero_1);
-  CHECK_ZERO(vtsi_mat->zero_2);
-  CHECK_ZERO(vtsi_mat->zero_3);
-  CHECK_ZERO(vtsi_mat->zero_4);
-  CHECK_ZERO(vtsi_mat->zero_5);
-  CHECK_ZERO(vtsi_mat->zero_6);
-  CHECK_ZERO(vtsi_mat->zero_7);
-  CHECK_ZERO(vtsi_mat->zero_8);
-  CHECK_ZERO(vtsi_mat->zero_9);
-  CHECK_ZERO(vtsi_mat->zero_10);
-  CHECK_ZERO(vtsi_mat->zero_11);
-  CHECK_ZERO(vtsi_mat->zero_12);
-  CHECK_ZERO(vtsi_mat->zero_13);
-  CHECK_ZERO(vtsi_mat->zero_14);
-  CHECK_ZERO(vtsi_mat->zero_15);
-  CHECK_ZERO(vtsi_mat->zero_16);
-  CHECK_ZERO(vtsi_mat->zero_17);
-  CHECK_ZERO(vtsi_mat->zero_18);
-  CHECK_ZERO(vtsi_mat->zero_19);
-  CHECK_ZERO(vtsi_mat->zero_20);
-  CHECK_ZERO(vtsi_mat->zero_21);
   CHECK_VALUE(vtsi_mat->vtsi_last_sector*2 <= vtsi_mat->vts_last_sector);
   CHECK_VALUE(vtsi_mat->vtsi_last_byte/DVD_BLOCK_LEN <= vtsi_mat->vtsi_last_sector);
   CHECK_VALUE(vtsi_mat->vtsm_vobs == 0 ||
@@ -791,12 +758,6 @@ static int ifoRead_VTS(ifo_handle_t *ifofile) {
 
   for(i = 0; i < 8; i++) {
     read_multichannel_ext(&vtsi_mat->vts_mu_audio_attr[i]);
-    CHECK_ZERO0(vtsi_mat->vts_mu_audio_attr[i].zero1);
-    CHECK_ZERO0(vtsi_mat->vts_mu_audio_attr[i].zero2);
-    CHECK_ZERO0(vtsi_mat->vts_mu_audio_attr[i].zero3);
-    CHECK_ZERO0(vtsi_mat->vts_mu_audio_attr[i].zero4);
-    CHECK_ZERO0(vtsi_mat->vts_mu_audio_attr[i].zero5);
-    CHECK_ZERO(vtsi_mat->vts_mu_audio_attr[i].zero6);
   }
 
   return 1;
@@ -945,7 +906,6 @@ static int ifoRead_CELL_POSITION_TBL(ifo_handle_t *ifofile,
 
   for(i = 0; i < nr; i++) {
     B2N_16(cell_position[i].vob_id_nr);
-    CHECK_ZERO(cell_position[i].zero_1);
   }
 
   return 1;
@@ -976,7 +936,6 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
   for(i = 0; i < 16; i++)
     B2N_32(pgc->palette[i]);
 
-  CHECK_ZERO(pgc->zero_1);
   CHECK_VALUE(pgc->nr_of_programs <= pgc->nr_of_cells);
 
   /* verify time (look at print_time) */
@@ -1160,7 +1119,6 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
   }
 
 
-  CHECK_ZERO(tt_srpt->zero_1);
   CHECK_VALUE(tt_srpt->nr_of_srpts != 0);
   CHECK_VALUE(tt_srpt->nr_of_srpts < 100); /* ?? */
   CHECK_VALUE(tt_srpt->nr_of_srpts * sizeof(title_info_t) <= info_length);
@@ -1235,7 +1193,6 @@ int ifoRead_VTS_PTT_SRPT(ifo_handle_t *ifofile) {
   B2N_16(vts_ptt_srpt->nr_of_srpts);
   B2N_32(vts_ptt_srpt->last_byte);
 
-  CHECK_ZERO(vts_ptt_srpt->zero_1);
   CHECK_VALUE(vts_ptt_srpt->nr_of_srpts != 0);
   CHECK_VALUE(vts_ptt_srpt->nr_of_srpts < 100); /* ?? */
 
@@ -1424,8 +1381,6 @@ int ifoRead_PTL_MAIT(ifo_handle_t *ifofile) {
   }
 
   for(i = 0; i < ptl_mait->nr_of_countries; i++) {
-    CHECK_ZERO(ptl_mait->countries[i].zero_1);
-    CHECK_ZERO(ptl_mait->countries[i].zero_2);
     CHECK_VALUE(ptl_mait->countries[i].pf_ptl_mai_start_byte
                 + sizeof(pf_level_t) * (ptl_mait->nr_of_vtss + 1) <= ptl_mait->last_byte + 1);
   }
@@ -1523,8 +1478,6 @@ int ifoRead_VTS_TMAPT(ifo_handle_t *ifofile) {
   B2N_16(vts_tmapt->nr_of_tmaps);
   B2N_32(vts_tmapt->last_byte);
 
-  CHECK_ZERO(vts_tmapt->zero_1);
-
   info_length = vts_tmapt->nr_of_tmaps * 4;
 
   vts_tmap_srp = calloc(1, info_length);
@@ -1572,7 +1525,6 @@ int ifoRead_VTS_TMAPT(ifo_handle_t *ifofile) {
     }
 
     B2N_16(vts_tmapt->tmap[i].nr_of_entries);
-    CHECK_ZERO(vts_tmapt->tmap[i].zero_1);
 
     if(vts_tmapt->tmap[i].nr_of_entries == 0) { /* Early out if zero entries */
       vts_tmapt->tmap[i].map_ent = NULL;
@@ -1692,7 +1644,6 @@ static int ifoRead_C_ADT_internal(ifo_handle_t *ifofile,
 
   info_length = c_adt->last_byte + 1 - C_ADT_SIZE;
 
-  CHECK_ZERO(c_adt->zero_1);
   /* assert(c_adt->nr_of_vobs > 0);
      Magic Knight Rayearth Daybreak is mastered very strange and has
      Titles with a VOBS that has no cells. */
@@ -1722,7 +1673,6 @@ static int ifoRead_C_ADT_internal(ifo_handle_t *ifofile,
     B2N_32(c_adt->cell_adr_table[i].start_sector);
     B2N_32(c_adt->cell_adr_table[i].last_sector);
 
-    CHECK_ZERO(c_adt->cell_adr_table[i].zero_1);
     CHECK_VALUE(c_adt->cell_adr_table[i].vob_id > 0);
     CHECK_VALUE(c_adt->cell_adr_table[i].vob_id <= c_adt->nr_of_vobs);
     CHECK_VALUE(c_adt->cell_adr_table[i].cell_id > 0);
@@ -1895,7 +1845,6 @@ static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
   B2N_16(pgcit->nr_of_pgci_srp);
   B2N_32(pgcit->last_byte);
 
-  CHECK_ZERO(pgcit->zero_1);
   /* assert(pgcit->nr_of_pgci_srp != 0);
      Magic Knight Rayearth Daybreak is mastered very strange and has
      Titles with 0 PTTs. */
@@ -2019,7 +1968,6 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
   B2N_16(pgci_ut->nr_of_lus);
   B2N_32(pgci_ut->last_byte);
 
-  CHECK_ZERO(pgci_ut->zero_1);
   CHECK_VALUE(pgci_ut->nr_of_lus != 0);
   CHECK_VALUE(pgci_ut->nr_of_lus < 100); /* ?? 3-4 ? */
   CHECK_VALUE((uint32_t)pgci_ut->nr_of_lus * PGCI_LU_SIZE < pgci_ut->last_byte);
@@ -2145,13 +2093,6 @@ static int ifoRead_VTS_ATTRIBUTES(ifo_handle_t *ifofile,
   B2N_32(vts_attributes->last_byte);
   B2N_32(vts_attributes->vts_cat);
 
-  CHECK_ZERO(vts_attributes->zero_1);
-  CHECK_ZERO(vts_attributes->zero_2);
-  CHECK_ZERO(vts_attributes->zero_3);
-  CHECK_ZERO(vts_attributes->zero_4);
-  CHECK_ZERO(vts_attributes->zero_5);
-  CHECK_ZERO(vts_attributes->zero_6);
-  CHECK_ZERO(vts_attributes->zero_7);
   CHECK_VALUE(vts_attributes->nr_of_vtsm_audio_streams <= 1);
   CHECK_VALUE(vts_attributes->nr_of_vtsm_subp_streams <= 1);
   CHECK_VALUE(vts_attributes->nr_of_vtstt_audio_streams <= 8);
@@ -2209,7 +2150,6 @@ int ifoRead_VTS_ATRT(ifo_handle_t *ifofile) {
   B2N_16(vts_atrt->nr_of_vtss);
   B2N_32(vts_atrt->last_byte);
 
-  CHECK_ZERO(vts_atrt->zero_1);
   CHECK_VALUE(vts_atrt->nr_of_vtss != 0);
   CHECK_VALUE(vts_atrt->nr_of_vtss < 100); /* ?? */
   CHECK_VALUE((uint32_t)vts_atrt->nr_of_vtss * (4 + VTS_ATTRIBUTES_MIN_SIZE) +

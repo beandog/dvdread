@@ -143,16 +143,6 @@ void navRead_PCI(pci_t *pci, unsigned char *buffer) {
 #ifndef NDEBUG
   /* Asserts */
 
-  /* pci pci gi */
-  CHECK_VALUE(pci->pci_gi.zero1 == 0);
-
-  /* pci hli hli_gi */
-  CHECK_VALUE(pci->hli.hl_gi.zero1 == 0);
-  CHECK_VALUE(pci->hli.hl_gi.zero2 == 0);
-  CHECK_VALUE(pci->hli.hl_gi.zero3 == 0);
-  CHECK_VALUE(pci->hli.hl_gi.zero4 == 0);
-  CHECK_VALUE(pci->hli.hl_gi.zero5 == 0);
-
   /* Are there buttons defined here? */
   if((pci->hli.hl_gi.hli_ss & 0x03) != 0) {
     CHECK_VALUE(pci->hli.hl_gi.btn_ns != 0);
@@ -166,12 +156,6 @@ void navRead_PCI(pci_t *pci, unsigned char *buffer) {
   for(i = 0; i < pci->hli.hl_gi.btngr_ns; i++) {
     for(j = 0; j < (36 / pci->hli.hl_gi.btngr_ns); j++) {
       int n = (36 / pci->hli.hl_gi.btngr_ns) * i + j;
-      CHECK_VALUE(pci->hli.btnit[n].zero1 == 0);
-      CHECK_VALUE(pci->hli.btnit[n].zero2 == 0);
-      CHECK_VALUE(pci->hli.btnit[n].zero3 == 0);
-      CHECK_VALUE(pci->hli.btnit[n].zero4 == 0);
-      CHECK_VALUE(pci->hli.btnit[n].zero5 == 0);
-      CHECK_VALUE(pci->hli.btnit[n].zero6 == 0);
 
       if (j < pci->hli.hl_gi.btn_ns) {
         CHECK_VALUE(pci->hli.btnit[n].x_start <= pci->hli.btnit[n].x_end);
@@ -257,9 +241,4 @@ void navRead_DSI(dsi_t *dsi, unsigned char *buffer) {
   for(i = 0; i < 32; i++)
     dsi->synci.sp_synca[i] = getbits(&state, 32 );
 
-
-  /* Asserts */
-
-  /* dsi dsi gi */
-  CHECK_VALUE(dsi->dsi_gi.zero1 == 0);
 }
