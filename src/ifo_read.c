@@ -643,9 +643,44 @@ static int ifoRead_VMG(ifo_handle_t *ifofile) {
   read_audio_attr(&vmgi_mat->vmgm_audio_attr);
   read_subp_attr(&vmgi_mat->vmgm_subp_attr);
 
+  /* Check for values that are out of bounds */
+  // CHECK_VALUE(vmgi_mat->vmg_last_sector != 0);
+  // CHECK_VALUE(vmgi_mat->vmgi_last_sector != 0);
+  if(vmgi_mat->vmg_last_sector == 0 || vmgi_mat->vmgi_last_sector == 0)
+    goto fail;
 
-  CHECK_VALUE(vmgi_mat->vmg_last_sector != 0);
-  CHECK_VALUE(vmgi_mat->vmgi_last_sector != 0);
+  // CHECK_VALUE(vmgi_mat->first_play_pgc < vmgi_mat->vmgi_last_byte);
+  if(vmgi_mat->first_play_pgc > vmgi_mat->vmgi_last_byte)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->tt_srpt <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->tt_srpt > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->vmgm_pgci_ut <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->vmgm_pgci_ut > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->ptl_mait <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->ptl_mait > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->vts_atrt <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->vts_atrt > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->txtdt_mgi <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->txtdt_mgi > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->vmgm_c_adt <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->vmgm_c_adt > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vmgi_mat->vmgm_vobu_admap <= vmgi_mat->vmgi_last_sector);
+  if(vmgi_mat->vmgm_vobu_admap > vmgi_mat->vmgi_last_sector)
+    goto fail;
+
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
   CHECK_VALUE(vmgi_mat->vmg_nr_of_title_sets != 0);
@@ -653,22 +688,22 @@ static int ifoRead_VMG(ifo_handle_t *ifofile) {
   CHECK_VALUE(vmgi_mat->vmgi_last_byte / DVD_BLOCK_LEN <=
               vmgi_mat->vmgi_last_sector);
   /* It seems that first_play_pgc is optional. */
-  CHECK_VALUE(vmgi_mat->first_play_pgc < vmgi_mat->vmgi_last_byte);
   CHECK_VALUE(vmgi_mat->vmgm_vobs == 0 ||
               (vmgi_mat->vmgm_vobs > vmgi_mat->vmgi_last_sector &&
                vmgi_mat->vmgm_vobs < vmgi_mat->vmg_last_sector));
-  CHECK_VALUE(vmgi_mat->tt_srpt <= vmgi_mat->vmgi_last_sector);
-  CHECK_VALUE(vmgi_mat->vmgm_pgci_ut <= vmgi_mat->vmgi_last_sector);
-  CHECK_VALUE(vmgi_mat->ptl_mait <= vmgi_mat->vmgi_last_sector);
-  CHECK_VALUE(vmgi_mat->vts_atrt <= vmgi_mat->vmgi_last_sector);
-  CHECK_VALUE(vmgi_mat->txtdt_mgi <= vmgi_mat->vmgi_last_sector);
-  CHECK_VALUE(vmgi_mat->vmgm_c_adt <= vmgi_mat->vmgi_last_sector);
-  CHECK_VALUE(vmgi_mat->vmgm_vobu_admap <= vmgi_mat->vmgi_last_sector);
 
   CHECK_VALUE(vmgi_mat->nr_of_vmgm_audio_streams <= 1);
   CHECK_VALUE(vmgi_mat->nr_of_vmgm_subp_streams <= 1);
 
   return 1;
+
+  fail:
+  free(ifofile->vmgi_mat);
+  ifofile->vmgi_mat = NULL;
+  return 0;
+
+
+
 }
 
 
