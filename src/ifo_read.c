@@ -648,7 +648,6 @@ static int ifoRead_VMG(ifo_handle_t *ifofile) {
   CHECK_VALUE(vmgi_mat->vmgi_last_sector != 0);
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
-  CHECK_VALUE(vmgi_mat->disc_side == 1 || vmgi_mat->disc_side == 2);
   CHECK_VALUE(vmgi_mat->vmg_nr_of_title_sets != 0);
   CHECK_VALUE(vmgi_mat->vmgi_last_byte >= 341);
   CHECK_VALUE(vmgi_mat->vmgi_last_byte / DVD_BLOCK_LEN <=
