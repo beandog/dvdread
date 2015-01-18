@@ -1408,6 +1408,12 @@ int ifoRead_PTL_MAIT(ifo_handle_t *ifofile) {
   B2N_16(ptl_mait->nr_of_vtss);
   B2N_32(ptl_mait->last_byte);
 
+  if(ptl_mait->nr_of_countries == 0) {
+    free(ptl_mait);
+    ifofile->ptl_mait = NULL;
+    return 0;
+  }
+
   CHECK_VALUE(ptl_mait->nr_of_countries != 0);
   CHECK_VALUE(ptl_mait->nr_of_countries < 100); /* ?? */
   CHECK_VALUE(ptl_mait->nr_of_vtss != 0);
