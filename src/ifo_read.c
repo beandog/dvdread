@@ -1942,7 +1942,6 @@ static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
     memcpy(&pgcit->pgci_srp[i], ptr, PGCI_SRP_SIZE);
     ptr += PGCI_SRP_SIZE;
     read_pgci_srp(&pgcit->pgci_srp[i]);
-    CHECK_VALUE(pgcit->pgci_srp[i].unknown1 == 0);
   }
   free(data);
 
