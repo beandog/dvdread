@@ -759,6 +759,40 @@ static int ifoRead_VTS(ifo_handle_t *ifofile) {
   B2N_32(vtsi_mat->vts_vobu_admap);
 
 
+  /* Check for values that are out of bounds */
+
+  // CHECK_VALUE(vtsi_mat->vts_ptt_srpt <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vts_ptt_srpt > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vts_pgcit <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vts_pgcit > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vtsm_pgci_ut <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vtsm_pgci_ut > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vts_tmapt <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vts_tmapt > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vtsm_c_adt <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vtsm_c_adt > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vtsm_vobu_admap <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vtsm_vobu_admap > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vts_c_adt <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vts_c_adt > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
+  // CHECK_VALUE(vtsi_mat->vts_vobu_admap <= vtsi_mat->vtsi_last_sector);
+  if(vtsi_mat->vts_vobu_admap > vtsi_mat->vtsi_last_sector)
+    goto fail;
+
   CHECK_VALUE(vtsi_mat->vtsi_last_sector*2 <= vtsi_mat->vts_last_sector);
   CHECK_VALUE(vtsi_mat->vtsi_last_byte/DVD_BLOCK_LEN <= vtsi_mat->vtsi_last_sector);
   CHECK_VALUE(vtsi_mat->vtsm_vobs == 0 ||
@@ -767,14 +801,6 @@ static int ifoRead_VTS(ifo_handle_t *ifofile) {
   CHECK_VALUE(vtsi_mat->vtstt_vobs == 0 ||
               (vtsi_mat->vtstt_vobs > vtsi_mat->vtsi_last_sector &&
                vtsi_mat->vtstt_vobs < vtsi_mat->vts_last_sector));
-  CHECK_VALUE(vtsi_mat->vts_ptt_srpt <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vts_pgcit <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vtsm_pgci_ut <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vts_tmapt <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vtsm_c_adt <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vtsm_vobu_admap <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vts_c_adt <= vtsi_mat->vtsi_last_sector);
-  CHECK_VALUE(vtsi_mat->vts_vobu_admap <= vtsi_mat->vtsi_last_sector);
 
   CHECK_VALUE(vtsi_mat->nr_of_vtsm_audio_streams <= 1);
   CHECK_VALUE(vtsi_mat->nr_of_vtsm_subp_streams <= 1);
@@ -792,6 +818,10 @@ static int ifoRead_VTS(ifo_handle_t *ifofile) {
   }
 
   return 1;
+
+  fail:
+    free(ifofile->vtsi_mat);
+    ifofile->vtsi_mat = NULL;
 }
 
 
