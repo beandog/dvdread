@@ -684,7 +684,7 @@ static int ifoRead_VMG(ifo_handle_t *ifofile) {
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
   CHECK_VALUE(vmgi_mat->vmgi_last_sector * 2 <= vmgi_mat->vmg_last_sector);
   CHECK_VALUE(vmgi_mat->vmg_nr_of_title_sets != 0);
-  CHECK_VALUE(vmgi_mat->vmgi_last_byte >= 341);
+  CHECK_VALUE(vmgi_mat->vmgi_last_byte >= 341); /* Where does 341 come from? */
   CHECK_VALUE(vmgi_mat->vmgi_last_byte / DVD_BLOCK_LEN <=
               vmgi_mat->vmgi_last_sector);
   /* It seems that first_play_pgc is optional. */
