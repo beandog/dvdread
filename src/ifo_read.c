@@ -1414,10 +1414,15 @@ int ifoRead_PTL_MAIT(ifo_handle_t *ifofile) {
     return 0;
   }
 
+  /* Maximum number of VTS IFOs is 99 */
+  if(ptl_mait->nr_of_vtss < 1 || ptl_mait->nr_of_vtss > 99) {
+    free(ptl_mait);
+    ifofile->ptl_mait = NULL;
+    return 0;
+  }
+
   CHECK_VALUE(ptl_mait->nr_of_countries != 0);
   CHECK_VALUE(ptl_mait->nr_of_countries < 100); /* ?? */
-  CHECK_VALUE(ptl_mait->nr_of_vtss != 0);
-  CHECK_VALUE(ptl_mait->nr_of_vtss < 100); /* ?? */
   CHECK_VALUE(ptl_mait->nr_of_countries * PTL_MAIT_COUNTRY_SIZE
               <= ptl_mait->last_byte + 1 - PTL_MAIT_SIZE);
 
@@ -2217,8 +2222,13 @@ int ifoRead_VTS_ATRT(ifo_handle_t *ifofile) {
   B2N_16(vts_atrt->nr_of_vtss);
   B2N_32(vts_atrt->last_byte);
 
-  CHECK_VALUE(vts_atrt->nr_of_vtss != 0);
-  CHECK_VALUE(vts_atrt->nr_of_vtss < 100); /* ?? */
+  /* Maximum number of VTS IFOs is 99 */
+  if(vts_atrt->nr_of_vtss < 1 || vts_atrt->nr_of_vtss > 99) {
+    free(vts_atrt);
+    ifofile->vts_atrt = NULL;
+    return 0;
+  }
+
   CHECK_VALUE((uint32_t)vts_atrt->nr_of_vtss * (4 + VTS_ATTRIBUTES_MIN_SIZE) +
               VTS_ATRT_SIZE < vts_atrt->last_byte + 1);
 
