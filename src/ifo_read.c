@@ -2251,7 +2251,13 @@ int ifoRead_VTS_ATRT(ifo_handle_t *ifofile) {
 
   for(i = 0; i < vts_atrt->nr_of_vtss; i++) {
     B2N_32(data[i]);
-    CHECK_VALUE(data[i] + VTS_ATTRIBUTES_MIN_SIZE < vts_atrt->last_byte + 1);
+    /* Check if the sector to seek to is past the last byte of the VTS */
+    if(data[i] + VTS_ATTRIBUTES_MIN_SIZE > vts_atrt->last_byte) {
+      free(data);
+      free(vts_atrt);
+      ifofile->vts_atrt = NULL;
+      return 0;
+    }
   }
 
   info_length = vts_atrt->nr_of_vtss * sizeof(vts_attributes_t);
