@@ -2229,9 +2229,6 @@ int ifoRead_VTS_ATRT(ifo_handle_t *ifofile) {
     return 0;
   }
 
-  CHECK_VALUE((uint32_t)vts_atrt->nr_of_vtss * (4 + VTS_ATTRIBUTES_MIN_SIZE) +
-              VTS_ATRT_SIZE < vts_atrt->last_byte + 1);
-
   info_length = vts_atrt->nr_of_vtss * sizeof(uint32_t);
   data = calloc(1, info_length);
   if(!data) {
