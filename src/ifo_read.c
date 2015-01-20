@@ -1011,9 +1011,15 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
   if(pgc->nr_of_programs == 0) {
     CHECK_ZERO(pgc->still_time);
     CHECK_ZERO(pgc->pg_playback_mode); /* ?? */
-    CHECK_VALUE(pgc->program_map_offset == 0);
-    CHECK_VALUE(pgc->cell_playback_offset == 0);
-    CHECK_VALUE(pgc->cell_position_offset == 0);
+    // CHECK_VALUE(pgc->program_map_offset == 0);
+    if(pgc->program_map_offset)
+      return 0;
+    // CHECK_VALUE(pgc->cell_playback_offset == 0);
+    if(pgc->cell_playback_offset)
+      return 0;
+    // CHECK_VALUE(pgc->cell_position_offset == 0);
+    if(pgc->cell_position_offset)
+      return 0;
   } else {
     CHECK_VALUE(pgc->program_map_offset != 0);
     CHECK_VALUE(pgc->cell_playback_offset != 0);
