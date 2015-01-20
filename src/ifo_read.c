@@ -1945,8 +1945,16 @@ static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
   }
   free(data);
 
-  for(i = 0; i < pgcit->nr_of_pgci_srp; i++)
-    CHECK_VALUE(pgcit->pgci_srp[i].pgc_start_byte + PGC_SIZE <= pgcit->last_byte+1);
+  /* Check for start byte values that are out of bounds */
+  /* FIXME? it's probably more sane / reasonable to simply reset the number of
+   * search pointers, or just ignore this one rather than quitting if any of them
+   * are invalid.  Maybe.  Although if one is wrong, it's a good indicator that the
+   * IFO is garbage, anyway.  So there's arguments to go both ways.  Exiting is
+   * safe, though, it will guarantee it's not accessed. */
+  for(i = 0; i < pgcit->nr_of_pgci_srp; i++) {
+    if(pgcit->pgci_srp[i].pgc_start_byte + PGC_SIZE > pgcit->last_byte)
+      goto fail;
+  }
 
   for(i = 0; i < pgcit->nr_of_pgci_srp; i++) {
     int dup;
