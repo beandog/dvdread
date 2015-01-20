@@ -1179,9 +1179,18 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
     B2N_32(tt_srpt->title[i].title_set_sector);
   }
 
+  /* Maximum number of VTS IFOs is 99 */
+  // TODO in all cases like these, see if they can be skipped, so that the
+  // correct data that is present in the VMG can be displayed
+  // CHECK_VALUE(tt_srpt->nr_of_srpts != 0);
+  // CHECK_VALUE(tt_srpt->nr_of_srpts < 100);
+  if(tt_srpt->nr_of_srpts < 1 || tt_srpt->nr_of_srpts > 99) {
+    free(ifofile->tt_srpt->title);
+    free(ifofile->tt_srpt);
+    ifofile->tt_srpt = NULL;
+    return 0;
+  }
 
-  CHECK_VALUE(tt_srpt->nr_of_srpts != 0);
-  CHECK_VALUE(tt_srpt->nr_of_srpts < 100); /* ?? */
   CHECK_VALUE(tt_srpt->nr_of_srpts * sizeof(title_info_t) <= info_length);
 
   for(i = 0; i < tt_srpt->nr_of_srpts; i++) {
@@ -1192,10 +1201,27 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
     /* CHECK_VALUE(tt_srpt->title[i].nr_of_ptts != 0); */
     /* XXX: this assertion breaks Ghostbusters: */
     CHECK_VALUE(tt_srpt->title[i].nr_of_ptts < 1000); /* ?? */
-    CHECK_VALUE(tt_srpt->title[i].title_set_nr != 0);
-    CHECK_VALUE(tt_srpt->title[i].title_set_nr < 100); /* ?? */
-    CHECK_VALUE(tt_srpt->title[i].vts_ttn != 0);
-    CHECK_VALUE(tt_srpt->title[i].vts_ttn < 100); /* ?? */
+
+    /* Maximum number of VTS IFOs is 99 */
+    // CHECK_VALUE(tt_srpt->title[i].title_set_nr != 0);
+    // CHECK_VALUE(tt_srpt->title[i].title_set_nr < 100);
+    if(tt_srpt->title[i].title_set_nr < 1 || tt_srpt->title[i].title_set_nr > 99) {
+      free(ifofile->tt_srpt->title);
+      free(ifofile->tt_srpt);
+      ifofile->tt_srpt = NULL;
+      return 0;
+    }
+
+    // CHECK_VALUE(tt_srpt->title[i].vts_ttn != 0);
+    // CHECK_VALUE(tt_srpt->title[i].vts_ttn < 100); /* ?? */
+    /* Maximum number of VTS IFOs is 99 */
+    if(tt_srpt->title[i].vts_ttn < 1 || tt_srpt->title[i].vts_ttn > 99) {
+      free(ifofile->tt_srpt->title);
+      free(ifofile->tt_srpt);
+      ifofile->tt_srpt = NULL;
+      return 0;
+    }
+
     /* CHECK_VALUE(tt_srpt->title[i].title_set_sector != 0); */
   }
 
