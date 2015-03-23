@@ -1014,7 +1014,9 @@ static int ifoRead_PGC(ifo_handle_t *ifofile, pgc_t *pgc, unsigned int offset) {
 
   /* Check that time is 0:0:0:0 also if nr_of_programs == 0 */
   if(pgc->nr_of_programs == 0) {
-    CHECK_ZERO(pgc->still_time);
+    // CHECK_ZERO(pgc->still_time);
+    if(pgc->still_time)
+      return 0;
     CHECK_ZERO(pgc->pg_playback_mode); /* ?? */
     // CHECK_VALUE(pgc->program_map_offset == 0);
     if(pgc->program_map_offset)
