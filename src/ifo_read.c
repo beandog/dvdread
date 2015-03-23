@@ -2014,17 +2014,6 @@ void ifoFree_PGCIT(ifo_handle_t *ifofile) {
   return;
 }
 
-static int find_dup_lut(pgci_lu_t *lu, uint32_t start_byte, int count) {
-  int i;
-
-  for(i = 0; i < count; i++) {
-    if(lu[i].lang_start_byte == start_byte) {
-      return i;
-    }
-  }
-  return -1;
-}
-
 int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
   pgci_ut_t *pgci_ut;
   unsigned int sector;
@@ -2116,12 +2105,6 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
   }
 
   for(i = 0; i < pgci_ut->nr_of_lus; i++) {
-    int dup;
-    if((dup = find_dup_lut(pgci_ut->lu, pgci_ut->lu[i].lang_start_byte, i)) >= 0) {
-      pgci_ut->lu[i].pgcit = pgci_ut->lu[dup].pgcit;
-      pgci_ut->lu[i].pgcit->ref_count++;
-      continue;
-    }
     pgci_ut->lu[i].pgcit = calloc(1, sizeof(pgcit_t));
     if(!pgci_ut->lu[i].pgcit) {
       unsigned int j, k;
