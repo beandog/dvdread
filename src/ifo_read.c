@@ -822,6 +822,7 @@ static int ifoRead_VTS(ifo_handle_t *ifofile) {
   fail:
     free(ifofile->vtsi_mat);
     ifofile->vtsi_mat = NULL;
+    return 0;
 }
 
 
