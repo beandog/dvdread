@@ -1930,17 +1930,6 @@ int ifoRead_PGCIT(ifo_handle_t *ifofile) {
   return 1;
 }
 
-static int find_dup_pgc(pgci_srp_t *pgci_srp, uint32_t start_byte, int count) {
-  int i;
-
-  for(i = 0; i < count; i++) {
-    if(pgci_srp[i].pgc_start_byte == start_byte) {
-      return i;
-    }
-  }
-  return -1;
-}
-
 static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
                                   unsigned int offset) {
   int i, info_length;
@@ -1995,12 +1984,6 @@ static int ifoRead_PGCIT_internal(ifo_handle_t *ifofile, pgcit_t *pgcit,
   }
 
   for(i = 0; i < pgcit->nr_of_pgci_srp; i++) {
-    int dup;
-    if((dup = find_dup_pgc(pgcit->pgci_srp, pgcit->pgci_srp[i].pgc_start_byte, i)) >= 0) {
-      pgcit->pgci_srp[i].pgc = pgcit->pgci_srp[dup].pgc;
-      pgcit->pgci_srp[i].pgc->ref_count++;
-      continue;
-    }
     pgcit->pgci_srp[i].pgc = calloc(1, sizeof(pgc_t));
     if(!pgcit->pgci_srp[i].pgc) {
       int j;
