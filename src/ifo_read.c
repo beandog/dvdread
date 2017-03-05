@@ -1132,11 +1132,6 @@ int ifoRead_FP_PGC(ifo_handle_t *ifofile) {
   return 1;
 }
 
-void ifoFree_FP_PGC(ifo_handle_t *ifofile) {
-  return;
-}
-
-
 int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
   tt_srpt_t *tt_srpt;
   unsigned int i;
@@ -1258,11 +1253,6 @@ int ifoRead_TT_SRPT(ifo_handle_t *ifofile) {
 #endif
 
   return 1;
-}
-
-
-void ifoFree_TT_SRPT(ifo_handle_t *ifofile) {
-  return;
 }
 
 
@@ -1415,11 +1405,6 @@ fail:
 }
 
 
-void ifoFree_VTS_PTT_SRPT(ifo_handle_t *ifofile) {
-  return;
-}
-
-
 int ifoRead_PTL_MAIT(ifo_handle_t *ifofile) {
   ptl_mait_t *ptl_mait;
   int info_length;
@@ -1550,10 +1535,6 @@ int ifoRead_PTL_MAIT(ifo_handle_t *ifofile) {
     }
   }
   return 1;
-}
-
-void ifoFree_PTL_MAIT(ifo_handle_t *ifofile) {
-  return;
 }
 
 int ifoRead_VTS_TMAPT(ifo_handle_t *ifofile) {
@@ -1801,14 +1782,6 @@ static int ifoRead_C_ADT_internal(ifo_handle_t *ifofile,
 }
 
 
-void ifoFree_C_ADT(ifo_handle_t *ifofile) {
-  return;
-}
-
-void ifoFree_TITLE_C_ADT(ifo_handle_t *ifofile) {
-  return;
-}
-
 int ifoRead_TITLE_VOBU_ADMAP(ifo_handle_t *ifofile) {
   if(!ifofile)
     return 0;
@@ -1900,15 +1873,6 @@ static int ifoRead_VOBU_ADMAP_internal(ifo_handle_t *ifofile,
     B2N_32(vobu_admap->vobu_start_sectors[i]);
 
   return 1;
-}
-
-void ifoFree_VOBU_ADMAP(ifo_handle_t *ifofile) {
-  return;
-}
-
-void ifoFree_TITLE_VOBU_ADMAP(ifo_handle_t *ifofile) {
-    return;
-
 }
 
 int ifoRead_PGCIT(ifo_handle_t *ifofile) {
@@ -2015,10 +1979,6 @@ fail:
   free(pgcit->pgci_srp);
   pgcit->pgci_srp = NULL;
   return 0;
-}
-
-void ifoFree_PGCIT(ifo_handle_t *ifofile) {
-  return;
 }
 
 int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
@@ -2154,11 +2114,6 @@ int ifoRead_PGCI_UT(ifo_handle_t *ifofile) {
   }
 
   return 1;
-}
-
-
-void ifoFree_PGCI_UT(ifo_handle_t *ifofile) {
-  return;
 }
 
 static int ifoRead_VTS_ATTRIBUTES(ifo_handle_t *ifofile,
@@ -2301,12 +2256,6 @@ int ifoRead_VTS_ATRT(ifo_handle_t *ifofile) {
   return 1;
 }
 
-
-void ifoFree_VTS_ATRT(ifo_handle_t *ifofile) {
-  return;
-}
-
-
 int ifoRead_TXTDT_MGI(ifo_handle_t *ifofile) {
   txtdt_mgi_t *txtdt_mgi;
 
@@ -2339,8 +2288,4 @@ int ifoRead_TXTDT_MGI(ifo_handle_t *ifofile) {
 
   /* fprintf(stderr, "-- Not done yet --\n"); */
   return 1;
-}
-
-void ifoFree_TXTDT_MGI(ifo_handle_t *ifofile) {
-  return;
 }
