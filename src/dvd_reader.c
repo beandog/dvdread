@@ -536,9 +536,7 @@ dvd_reader_t *DVDOpen( const char *ppath )
 #endif
 
 #if !defined(_WIN32) && !defined(__OS2__)
-    if( !dev_name ) {
-      fprintf( stderr, "libdvdread: Couldn't find device name.\n" );
-    } else if( !auth_drive ) {
+    if( dev_name && !auth_drive ) {
       fprintf( stderr, "libdvdread: Device %s inaccessible, "
                "CSS authentication not available.\n", dev_name );
     }
